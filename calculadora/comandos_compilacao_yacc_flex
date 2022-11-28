@@ -1,0 +1,3 @@
+bison -d addier-carbonel.y
+flex addier.l
+gcc -o addier.carbonel lex.yy.c addier.tab.c -ll

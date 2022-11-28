@@ -1,0 +1,3 @@
+bison -d accumulator.y
+flex accumulator.l
+gcc -o accumulator lex.yy.c accumulator.tab.c -ll
