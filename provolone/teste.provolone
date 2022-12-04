@@ -1,0 +1,5 @@
+ENTRADA X Y
+SAIDA X
+INC(X)
+X=Y
+FIM

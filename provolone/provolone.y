@@ -16,7 +16,7 @@
 #define CODE_IF 8
 #define CODE_IF_NOT 9
 #define CODE_END -1
-#define YYDEBUG 0
+#define YYDEBUG 1
 
 extern int yylex();
 extern FILE *yyin;
@@ -38,14 +38,56 @@ void openFile(){
 }
 
 void cWriter(LLIST *llist){
+    printf("oi\n");
     openFile();
     fprintf(cFile,"#include <stdio.h>\nint main(void) {\n");
     while(llist != NULL) {
+        printf("%d",llist->line.cmd);
         switch(llist->line.cmd){
             case CODE_OPR_ZERO: {
-                fprintf(cFile, "%s = 0;\n", e->line.v1);
+                fprintf(cFile, "%s = 0;\n", llist->line.v1);
+                break;
             }
+            case CODE_EQUAL: {
+                fprintf(cFile, "%s = %s;\n",llist->line.v1, llist->line.v2);
+                break;
+            }
+            case CODE_OPR_ADD: {
+                fprintf(cFile, "%s = %s + 1;\n", llist->line.v1, llist->line.v1);
+                break;
+            }
+            case CODE_FUNCTION: {
+                char *v1 = strtok(llist->line.v1, " ");
+
+                while (v1 != NULL){
+
+                    fprintf(cFile, "int %s;\n",v1);
+                    fprintf(cFile, "printf(\"Entrada [%s]: \");\n", v1);
+                    fprintf(cFile, "scanf(\"%s\",&%s);\n", "%d", v1);
+
+                    v1 = strtok(NULL, " ");
+                }
+                break;
+            }
+            case CODE_EXIT: {
+                
+
+                char *v1 = strtok(llist->line.v1, " ");
+                while (v1 != NULL) {
+                    fprintf(cFile, "printf(\"Saida: [%s] = %s \\n\", %s);\n", v1, "%d", v1);
+                    v1 = strtok(NULL, " ");
+                }
+                fprintf(cFile,"return 0;\n}");
+                break;
+            }
+            default:
+                printf("af\n");
+                break;
         }
+        if(llist->prox == NULL){
+            printf("monkey time\n");
+        }
+        llist = llist->prox;
     }
     fclose(cFile);
 }
@@ -66,9 +108,10 @@ void yyparserDebugger(LLIST *llist){
 %token ENQUANTO
 %token FACA
 %token ZERA
-%token '('
-%token ')'
-%token '='
+%token ABRE
+%token FECHA
+%token IGUAL
+%token ENTAO
 %token INC
 %token <content> ID
 %token VEZES
@@ -78,7 +121,7 @@ void yyparserDebugger(LLIST *llist){
 %union{
     int var;
     char *content;
-    LLIST *llistvar;
+    struct llist *llistvar;
 }
 
 %type <var> program
@@ -86,7 +129,6 @@ void yyparserDebugger(LLIST *llist){
 %type <llistvar> cmds
 %type <llistvar> cmd
 
-%start program
 %%
 
 program : ENTRADA varlist SAIDA varlist cmds FIM {
@@ -98,7 +140,7 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
     llist->line.v1 = $2;
     llist->line.v2 = $4;
     llist->line.cmd = CODE_FUNCTION;
-    addLLISTend(llist, $5);
+    addLLISTstart(llist, $5);
 
     LLIST *aux = (LLIST *)malloc(sizeof(LLIST));
     if (aux == NULL){
@@ -108,12 +150,12 @@ program : ENTRADA varlist SAIDA varlist cmds FIM {
     aux->line.cmd = CODE_EXIT;
     addLLISTend(aux, llist);
 
-    cWriter(cFile);
+    cWriter(llist);
 };
 
 varlist : varlist ID {
     char buffer[50];
-    sprintf(buffer, 50, "%s %s", $1, $2);
+    snprintf(buffer, 50, "%s %s", $1, $2);
     $$ = buffer;
     }
 
@@ -143,7 +185,32 @@ cmd : ENQUANTO ID FACA cmds FIM {
     aux->line.cmd = CODE_END;
     addLLISTend(aux, llist);
     $$ = llist;
-};
+}
+
+    | ID IGUAL ID {
+        LLIST *llist = (LLIST *)malloc(sizeof(LLIST));
+
+        if (llist == NULL){
+            printf("ERROR READING ATTRIBUTION\n");
+            exit(-1);
+        }
+
+        llist->line.v1 = $1;
+        llist->line.v2 = $3;
+        llist->line.cmd = CODE_EQUAL;
+        $$ = llist;
+    }
+
+    | INC ABRE ID FECHA {
+        LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
+        if (llist == NULL){
+            printf("ERROR READING INCREMENT");
+            exit(-1);
+        }
+        llist->line.v1 = $3;
+        llist->line.cmd = CODE_OPR_ADD;
+        $$ = llist;
+    }
 %%
 
 int main(int argc, char **argv){
