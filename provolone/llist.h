@@ -12,9 +12,9 @@ typedef struct llist{
     LINE line;
 }LLIST;
 
-void addLLISTend(llist *newC, llist *llist){
+void addLLISTend(LLIST *newC, LLIST *llist){
 
-    llist *temp = llist;
+    LLIST *temp = llist;
 
     while (temp->prox != NULL){
         temp = temp->prox;
@@ -24,8 +24,8 @@ void addLLISTend(llist *newC, llist *llist){
     newC->ant = temp;
 }
 
-void addLLISTstart(llist *newC, llist *llist){
+void addLLISTstart(LLIST *newC, LLIST *llist){
 
-    llist->prev = newC;
-    newC->next = llist;
+    llist->ant = newC;
+    newC->prox = llist;
 }
