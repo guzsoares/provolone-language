@@ -68,7 +68,10 @@ extern int yydebug;
     ID = 269,                      /* ID  */
     VEZES = 270,                   /* VEZES  */
     SE = 271,                      /* SE  */
-    SENAO = 272                    /* SENAO  */
+    SENAO = 272,                   /* SENAO  */
+    DEC = 273,                     /* DEC  */
+    IMULL = 274,                   /* IMULL  */
+    SQRD = 275                     /* SQRD  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -92,18 +95,21 @@ extern int yydebug;
 #define VEZES 270
 #define SE 271
 #define SENAO 272
+#define DEC 273
+#define IMULL 274
+#define SQRD 275
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 121 "provolone.y"
+#line 151 "provolone.y"
 
     int var;
     char *content;
     struct llist *llistvar;
 
-#line 107 "y.tab.h"
+#line 113 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

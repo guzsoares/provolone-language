@@ -17,6 +17,9 @@ VEZES       { return VEZES; }
 ENTAO       { return ENTAO; }
 SENAO       { return SENAO; }
 INC         { return INC;}
+DEC         { return DEC;}
+IMULL       { return IMULL;}
+SQRD        { return SQRD;}
 \(           { return ABRE; }
 \)           { return FECHA; }
 =           { return IGUAL; }

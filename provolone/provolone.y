@@ -15,6 +15,9 @@
 #define CODE_REPEAT 7
 #define CODE_IF 8
 #define CODE_IF_NOT 9
+#define CODE_DEC 10
+#define CODE_IMULL 11
+#define CODE_SQRD 12
 #define CODE_END -1
 #define YYDEBUG 1
 
@@ -38,14 +41,24 @@ void openFile(){
 }
 
 void cWriter(LLIST *llist){
-    printf("oi\n");
     openFile();
     fprintf(cFile,"#include <stdio.h>\nint main(void) {\n");
     while(llist != NULL) {
-        printf("%d",llist->line.cmd);
         switch(llist->line.cmd){
             case CODE_OPR_ZERO: {
                 fprintf(cFile, "%s = 0;\n", llist->line.v1);
+                break;
+            }
+            case CODE_SQRD: {
+                fprintf(cFile, "%s = %s * %s;\n", llist->line.v1, llist->line.v1, llist->line.v1);
+                break;
+            }
+            case CODE_IMULL: {
+                fprintf(cFile, "%s = %s * 2;\n", llist->line.v1, llist->line.v1);
+                break;
+            }
+            case CODE_DEC: {
+                fprintf(cFile, "%s = %s - 1;\n",llist->line.v1, llist->line.v1);
                 break;
             }
             case CODE_EQUAL: {
@@ -54,6 +67,14 @@ void cWriter(LLIST *llist){
             }
             case CODE_OPR_ADD: {
                 fprintf(cFile, "%s = %s + 1;\n", llist->line.v1, llist->line.v1);
+                break;
+            }
+            case CODE_END: {
+                fprintf(cFile, "}\n");
+                break;
+            }
+            case CODE_WHILE: {
+                fprintf(cFile, "while (%s > 0) {\n", llist->line.v1);
                 break;
             }
             case CODE_FUNCTION: {
@@ -80,12 +101,18 @@ void cWriter(LLIST *llist){
                 fprintf(cFile,"return 0;\n}");
                 break;
             }
-            default:
-                printf("af\n");
+            case CODE_IF: {
+                fprintf(cFile,"if (%s != 0) {\n", llist->line.v1);
                 break;
-        }
-        if(llist->prox == NULL){
-            printf("monkey time\n");
+            }
+            case CODE_IF_NOT: {
+                fprintf(cFile, "} else {\n");
+                break;
+            }
+            case CODE_REPEAT: {
+                fprintf(cFile, "for (int i = 0; i < %s; i++) {\n", llist->line.v1);
+                break;
+            }
         }
         llist = llist->prox;
     }
@@ -117,6 +144,9 @@ void yyparserDebugger(LLIST *llist){
 %token VEZES
 %token SE
 %token SENAO
+%token DEC
+%token IMULL
+%token SQRD
 
 %union{
     int var;
@@ -187,6 +217,17 @@ cmd : ENQUANTO ID FACA cmds FIM {
     $$ = llist;
 }
 
+    | INC ABRE ID FECHA {
+        LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
+        if (llist == NULL){
+            printf("ERROR READING INCREMENT");
+            exit(-1);
+        }
+        llist->line.v1 = $3;
+        llist->line.cmd = CODE_OPR_ADD;
+        $$ = llist;
+    }
+
     | ID IGUAL ID {
         LLIST *llist = (LLIST *)malloc(sizeof(LLIST));
 
@@ -201,14 +242,127 @@ cmd : ENQUANTO ID FACA cmds FIM {
         $$ = llist;
     }
 
-    | INC ABRE ID FECHA {
+    | FACA ID VEZES cmds FIM {
+
         LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
         if (llist == NULL){
-            printf("ERROR READING INCREMENT");
+            printf("ERROR READING LOOP");
             exit(-1);
         }
+
+        llist->line.v1 = $2;
+        llist->line.cmd = CODE_REPEAT;
+        addLLISTend($4,llist);
+
+        LLIST *aux = (LLIST*)malloc(sizeof(LLIST));
+        if (aux == NULL){
+            printf("ERROR READING END");
+            exit(-1);
+        }
+
+        aux->line.cmd = CODE_END;
+        addLLISTend(aux,llist);
+        $$ = llist;
+        
+    }
+
+    | SE ID cmds FIM {
+
+        LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
+        if (llist == NULL){
+            printf("ERROR READING IF");
+            exit(-1);
+        }
+
+        llist->line.v1 = $2;
+        llist->line.cmd = CODE_IF;
+        addLLISTend($3,llist);
+
+        LLIST *aux = (LLIST*)malloc(sizeof(LLIST));
+        if (aux == NULL){
+            printf("ERROR READING END");
+            exit(-1);
+        }
+
+        aux->line.cmd = CODE_END;
+        addLLISTend(aux,llist);
+        $$ = llist;
+
+    }
+
+    | SE ID cmds SENAO cmds FIM {
+        
+        LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
+        if (llist == NULL){
+            printf("ERROR READING IF IF NOT");
+            exit(-1);
+        }
+
+        llist->line.v1 = $2;
+        llist->line.cmd = CODE_IF;
+        addLLISTend($3,llist);
+
+        LLIST *aux = (LLIST*)malloc(sizeof(LLIST));
+        if (aux == NULL){
+            printf("ERROR READING IFNOT ");
+            exit(-1);
+        }
+
+        aux->line.cmd = CODE_IF_NOT;
+        addLLISTend(aux,llist);
+        addLLISTend($5,llist);
+
+        aux->line.cmd = CODE_END;
+        addLLISTend(aux,llist);
+
+        $$ = llist;
+    }
+
+    | ZERA ABRE ID FECHA {
+        LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
+        if (llist == NULL){
+            printf("ERROR READING ZERO");
+            exit(-1);
+        }
+
         llist->line.v1 = $3;
-        llist->line.cmd = CODE_OPR_ADD;
+        llist->line.cmd = CODE_OPR_ZERO;
+        $$ = llist;
+    }
+
+    | DEC ABRE ID FECHA {
+        LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
+        if (llist == NULL){
+            printf("ERROR READING DEC");
+            exit(-1);
+        }
+
+        llist->line.v1 = $3;
+        llist->line.cmd = CODE_DEC;
+        $$ = llist;
+    }
+
+    | IMULL ABRE ID FECHA {
+        LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
+        if (llist == NULL){
+            printf("ERROR READING IMULL");
+            exit(-1);
+        }
+
+        llist->line.v1 = $3;
+        llist->line.cmd = CODE_IMULL;
+        $$ = llist;
+    }
+
+    | SQRD ABRE ID FECHA {
+        LLIST *llist = (LLIST*)malloc(sizeof(LLIST));
+        if (llist == NULL){
+            printf("ERROR READING SQRD");
+            exit(-1);
+        }
+
+        llist->line.v1 = $3;
+        llist->line.cmd = CODE_SQRD;
         $$ = llist;
     }
 %%
