@@ -475,8 +475,8 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "provolone.l"
-#line 4 "provolone.l"
+#line 1 "provol_lexic.l"
+#line 4 "provol_lexic.l"
     #include <stdio.h>
     #include "y.tab.h"
 #line 483 "lex.yy.c"
@@ -696,7 +696,7 @@ YY_DECL
 		}
 
 	{
-#line 7 "provolone.l"
+#line 7 "provol_lexic.l"
 
 
 #line 703 "lex.yy.c"
@@ -759,102 +759,102 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 9 "provolone.l"
+#line 9 "provol_lexic.l"
 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 10 "provolone.l"
+#line 10 "provol_lexic.l"
 { return ENTRADA; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 11 "provolone.l"
+#line 11 "provol_lexic.l"
 { return SAIDA; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 12 "provolone.l"
+#line 12 "provol_lexic.l"
 { return FACA; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 13 "provolone.l"
+#line 13 "provol_lexic.l"
 { return ENQUANTO; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 14 "provolone.l"
+#line 14 "provol_lexic.l"
 { return FIM; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 15 "provolone.l"
+#line 15 "provol_lexic.l"
 { return ZERA; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 16 "provolone.l"
+#line 16 "provol_lexic.l"
 { return SE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 17 "provolone.l"
+#line 17 "provol_lexic.l"
 { return VEZES; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 18 "provolone.l"
+#line 18 "provol_lexic.l"
 { return ENTAO; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 19 "provolone.l"
+#line 19 "provol_lexic.l"
 { return SENAO; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 20 "provolone.l"
+#line 20 "provol_lexic.l"
 { return INC;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 21 "provolone.l"
+#line 21 "provol_lexic.l"
 { return DEC;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 22 "provolone.l"
+#line 22 "provol_lexic.l"
 { return IMULL;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 23 "provolone.l"
+#line 23 "provol_lexic.l"
 { return SQRD;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 24 "provolone.l"
+#line 24 "provol_lexic.l"
 { return ABRE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 25 "provolone.l"
+#line 25 "provol_lexic.l"
 { return FECHA; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 26 "provolone.l"
+#line 26 "provol_lexic.l"
 { return IGUAL; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 27 "provolone.l"
+#line 27 "provol_lexic.l"
 {yylval.content = strdup(yytext); return (ID);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 28 "provolone.l"
+#line 28 "provol_lexic.l"
 ECHO;
 	YY_BREAK
 #line 861 "lex.yy.c"
@@ -1862,4 +1862,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 28 "provolone.l"
+#line 28 "provol_lexic.l"
