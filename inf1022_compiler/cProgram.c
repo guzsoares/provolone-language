@@ -6,9 +6,8 @@ scanf("%d",&X);
 int Y;
 printf("Entrada [Y]: ");
 scanf("%d",&Y);
-while (Y > 0) {
-Y = Y - 1;
-X = X * 2;
+for (int i = 0; i < Y; i++) {
+X = X + 1;
 }
 printf("Saida: [X] = %d \n", X);
 return 0;
