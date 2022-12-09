@@ -47,7 +47,7 @@ sudo apt-get install bison flex
 
 ```shell
 cd inf1022_compiler
-yacc -d src/provol_grammar.y && lex src/provol_lexic.l && gcc -c src/lex.yy.c src/y.tab.c && gcc -o compile src/lex.yy.o src/y.tab.o -ll
+bison -d src/provol_grammar.y && flex src/provol_lexic.l && gcc -c src/lex.yy.c src/y.tab.c && gcc -o compile src/lex.yy.o src/y.tab.o -ll
 ```
 O comando irá gerar um objeto compile, que precisa de um arquivo provolone.
 
